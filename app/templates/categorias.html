@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Nueva Categoría</h5>
+            </div>
+            <div class="card-body">
+                
+                <!-- Alertas -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="/categorias">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Guardar Categoría</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Listado de categorías -->
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Listado de Categorías</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% if categorias %}
+                        {% import "base.html" as macros %}
+                        {% for cat in categorias %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ cat.nombre }}
+                                <span class="badge bg-dark rounded-pill">{{ cat.anuncios|length }} </span>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item text-muted text-center">No hay categorías registradas aún.</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}s

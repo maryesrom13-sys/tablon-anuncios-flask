@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <!-- Formulario para publicar anuncio -->
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Publicar Anuncio</h5>
+            </div>
+            <div class="card-body">
+                
+                <!-- Alertas -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="/anuncios">
+                    <div class="mb-3">
+                        <label for="titulo" class="form-label">Título</label>
+                        <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Título del anuncio" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" placeholder="Detalles del aviso..." required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="categoria_id" class="form-label">Categoría</label>
+                        <select class="form-select" id="categoria_id" name="categoria_id" required>
+                            <option value="">Selecciona una categoría</option>
+                            {% for cat in categorias %}
+                                <option value="{{ cat.id }}">{{ cat.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Publicar Anuncio</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Listado de anuncios en el Tablón -->
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Tablón de Anuncios</h5>
+            </div>
+            <div class="card-body">
+                {% if anuncios %}
+                    <div class="list-group">
+                        {% for anuncio in anuncios %}
+                            <div class="list-group-item list-group-item-action mb-3 shadow-sm border rounded">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1 text-primary">{{ anuncio.titulo }}</h5>
+                                    <span class="badge bg-info text-dark">{{ anuncio.categoria.nombre if anuncio.categoria else 'General' }}</span>
+                                </div>
+                                <p class="mb-1 mt-2">{{ anuncio.descripcion }}</p>
+                                <small class="text-muted">Publicado el: {{ anuncio.fecha.strftime('%d/%m/%Y %H:%M') if anuncio.fecha else 'Reciente' }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning text-center mb-0">
+                        No hay anuncios publicados en el tablón .!
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
